@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-
+import DateForm from './Components/DateForm'
 function App() {
   
   const [data,setData] = useState([{}])
 
-  useEffect(() => {
+  /*useEffect(() => {
     fetch("/playlist").then(
       res => res.json()
     ).then (
@@ -13,17 +13,11 @@ function App() {
         console.log(data)
       }
     )
-  }, [])
+  }, [])*/
 
   return (
     <div>
-      {(typeof data.songs === 'undefined') ? (
-        <p>Loading...</p>
-      ) : (
-        data.songs.map((song, i) => (
-          <p key={i}>{song}</p>
-        ))
-      )}
+      <DateForm/>
     </div>
   )
 }
