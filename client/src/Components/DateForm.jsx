@@ -1,15 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import './DateForm.css'
 
 const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [data, setData] = useState([{}]);
+  const [date, setDate] = useState("00-00-0000");
 
+  //changes the date on change
   const handleDateChange = (date) => {
     setSelectedDate(date);
+    setDate(formatDate(date));
   };
 
+  //formats the date in yyyy-mm-dd
   const formatDate = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -19,8 +23,9 @@ const DateForm = () => {
     return formattedDate;
   };
 
+
   const validateDate = (date) => {
-    const minDate = new Date(1980, 0, 1);
+    const minDate = new Date(1960, 1, 1);
     const maxDate = new Date(2023, 11, 31);
     return date >= minDate && date <= maxDate;
   };
@@ -45,21 +50,26 @@ const DateForm = () => {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <DatePicker
-          selected={selectedDate}
-          onChange={handleDateChange}
-          dateFormat="dd/MM/yyyy"
-          placeholderText="Select a date"
-          showYearDropdown
-          scrollableYearDropdown
-          yearDropdownItemNumber={100}
-          minDate={new Date(1980, 0, 1)}
-          maxDate={new Date(2023, 11, 31)}
-          filterDate={validateDate}
-        />
-        <button type="submit">Submit</button>
+    <div className='formContainer'>
+      <form className="form" onSubmit={handleSubmit}>
+        <div className='date'>
+          <DatePicker
+            selected={selectedDate}
+            onChange={handleDateChange}
+            dateFormat="dd/MM/yyyy"
+            placeholderText="Select a date"
+            showYearDropdown
+            scrollableYearDropdown
+            yearDropdownItemNumber={100}
+            minDate={new Date(1960, 1, 1)}
+            maxDate={new Date(2023, 11, 31)}
+            filterDate={validateDate}
+          />
+        </div>
+        <div className='displayDiv'>
+          <span className='displayDate'>{date}</span>
+        </div>
+        <button className='submit' type="submit">Submit</button>
       </form>
     </div>
   );
