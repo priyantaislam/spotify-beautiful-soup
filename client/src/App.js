@@ -18,6 +18,7 @@ function App() {
     //making a POST request to get the spotify api token
     fetch('https://accounts.spotify.com/api/token', authParameters)
       .then(result => result.json())
+      //log the token for testing
       .then(data => console.log(data))
   }, [])
   
