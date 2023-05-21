@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import DateForm from './Components/DateForm'
 function App() {
   
-  const [data,setData] = useState([{}])
+  
 
   /*useEffect(() => {
     fetch("/playlist").then(

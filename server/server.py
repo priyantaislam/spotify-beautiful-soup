@@ -5,10 +5,10 @@ import requests
 
 app = Flask(__name__)
 
-@app.route("/playlist")
-def playlist():
+@app.route("/playlist/<string:date>")
+def playlist(date):
     #making a request to Billboard website to get hot 100 in a particular week
-    response = requests.get("https://www.billboard.com/charts/hot-100/2000-05-12")
+    response = requests.get("https://www.billboard.com/charts/hot-100/{}".format(date))
     web_page = response.text
 
     #reading webpage content
