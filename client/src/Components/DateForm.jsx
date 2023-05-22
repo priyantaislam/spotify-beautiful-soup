@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DateForm.css'
+import { useAuthContext } from '../Hooks/useAuthContext';
 
 const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("00-00-0000");
+  const { token } = useAuthContext();
 
   //changes the date on change
   const handleDateChange = (date) => {
@@ -23,7 +25,7 @@ const DateForm = () => {
     return formattedDate;
   };
 
-
+  //Validates input date in range
   const validateDate = (date) => {
     const minDate = new Date(1960, 1, 1);
     const maxDate = new Date(2023, 11, 31);
@@ -32,7 +34,8 @@ const DateForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
-    // Call your function or perform any desired actions with the selected date
+    
+    // making the backend API call with selected date
     if (selectedDate) {
       console.log('Selected date:', formatDate(selectedDate));
       // Replace the console.log with your desired function or action
@@ -40,6 +43,7 @@ const DateForm = () => {
         .then((response) => response.json())
         .then((data) => {
           // Process the response data
+          console.log(token);
           console.log(data);
         })
         .catch((error) => {
