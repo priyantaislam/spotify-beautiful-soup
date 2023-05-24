@@ -7,6 +7,7 @@ import { useAuthContext } from '../Hooks/useAuthContext';
 const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("00-00-0000");
+  //Grabs the spotify auth token
   const { token } = useAuthContext();
 
   //changes the date on change
