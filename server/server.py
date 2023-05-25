@@ -21,7 +21,7 @@ def playlist(date):
     for row in rows:
         song = row.find("ul").find("h3").string
         artist = row.find("ul").find_all("span")[1].string
-        entry = song.strip() + " by " + artist.strip()
+        entry = (song.strip(),artist.strip())
         playlist.append(entry)
     return {"songs": playlist}
 

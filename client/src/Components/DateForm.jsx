@@ -7,6 +7,7 @@ import { useAuthContext } from '../Hooks/useAuthContext';
 const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("00-00-0000");
+  const [songs, setSongs] = useState([]);
   //Grabs the spotify auth token
   const { token } = useAuthContext();
 
@@ -45,12 +46,16 @@ const DateForm = () => {
         .then((data) => {
           // Process the response data
           console.log(token);
-          console.log(data);
+          setSongs(data);
         })
         .catch((error) => {
           // Handle any errors
           console.error(error);
         });
+      //Create the playlist
+      //Search for track and add them
+      //Display playlist in embedded window
+      
     }
   };
 
