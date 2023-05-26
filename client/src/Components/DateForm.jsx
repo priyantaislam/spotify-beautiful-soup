@@ -6,7 +6,7 @@ import { useAuthContext } from '../Hooks/useAuthContext';
 
 const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
-  const [date, setDate] = useState("00-00-0000");
+  const [date, setDate] = useState("0000-00-00");
   const [songs, setSongs] = useState([]);
   //Grabs the spotify auth token
   const { token } = useAuthContext();
@@ -46,6 +46,7 @@ const DateForm = () => {
         .then((data) => {
           // Process the response data
           console.log(token);
+          console.log(data);
           setSongs(data);
         })
         .catch((error) => {
@@ -62,9 +63,12 @@ const DateForm = () => {
   return (
     <div className='formContainer'>
       <form className="form" onSubmit={handleSubmit}>
+        <div className='displayDiv'>
+          <span className='displayDate'>{date}</span>
+        </div>
         <div className='date'>
           <DatePicker
-            selected={selectedDate}
+            //selected={selectedDate}
             onChange={handleDateChange}
             dateFormat="dd/MM/yyyy"
             placeholderText="Select a date"
@@ -75,9 +79,6 @@ const DateForm = () => {
             maxDate={new Date(2023, 11, 31)}
             filterDate={validateDate}
           />
-        </div>
-        <div className='displayDiv'>
-          <span className='displayDate'>{date}</span>
         </div>
         <button className='submit' type="submit">Submit</button>
       </form>
