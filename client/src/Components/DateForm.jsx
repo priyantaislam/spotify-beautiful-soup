@@ -8,6 +8,9 @@ const DateForm = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("0000-00-00");
   const [songs, setSongs] = useState([]);
+  //the song title and artist name for a particular track
+  const [songName, setSongName] = useState("");
+  const [artistName, setArtistName] = useState("");
   //Grabs the spotify auth token
   const { token } = useAuthContext();
 
@@ -34,9 +37,15 @@ const DateForm = () => {
     return date >= minDate && date <= maxDate;
   };
 
+  //set spotify query and send api request for search
+  const spotifySearch = () => {
+    //TODO
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     
+    //Create the playlist
     // making the backend API call with selected date
     if (selectedDate) {
       console.log('Selected date:', formatDate(selectedDate));
@@ -46,15 +55,18 @@ const DateForm = () => {
         .then((data) => {
           // Process the response data
           console.log(token);
-          console.log(data);
-          setSongs(data);
+          setSongs(data.songs);
+          songs.forEach((song) => {
+            // Perform any desired operations with each song
+            setSongName(song[0]);
+            setArtistName(song[1]);
+            //Search for track and add them
+          });
         })
         .catch((error) => {
           // Handle any errors
           console.error(error);
         });
-      //Create the playlist
-      //Search for track and add them
       //Display playlist in embedded window
       
     }
