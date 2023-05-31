@@ -5,7 +5,6 @@ import './DateForm.css'
 import { useAuthContext } from '../Hooks/useAuthContext';
 
 const DateForm = () => {
-  const [selectedDate, setSelectedDate] = useState(null);
   const [date, setDate] = useState("0000-00-00");
   const [songs, setSongs] = useState([]);
   //the song title and artist name for a particular track
@@ -16,7 +15,6 @@ const DateForm = () => {
 
   //changes the date on change
   const handleDateChange = (date) => {
-    setSelectedDate(date);
     setDate(formatDate(date));
   };
 
@@ -38,19 +36,39 @@ const DateForm = () => {
   };
 
   //set spotify query and send api request for search
-  const spotifySearch = () => {
-    //TODO
+  const spotifySearch = (song, artist) => {
+    // Format song and artist for query string
+    const songStr = song.replace(/ /g, '%');
+    const artistStr = artist.replace(/ /g, '%');
+    //Constructing the query string
+    const url = `https://api.spotify.com/v1/search?q=${songStr}%20artist:${artistStr}&type=track&limit=1&offset=0`;
+  
+    fetch(url, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token
+      }
+    })
+      .then(response => response.json())
+      .then((data) => {
+        // Handle the response data here
+        
+      })
+      .catch((error) => {
+        // Handle any errors here
+      });
   };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     
     //Create the playlist
     // making the backend API call with selected date
-    if (selectedDate) {
-      console.log('Selected date:', formatDate(selectedDate));
+    if (date) {
+      console.log('Selected date:', date);
       // Replace the console.log with your desired function or action
-      fetch(`/playlist/${formatDate(selectedDate)}`)
+      fetch(`/playlist/${date}`)
         .then((response) => response.json())
         .then((data) => {
           // Process the response data
