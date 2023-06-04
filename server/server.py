@@ -11,6 +11,7 @@ load_dotenv()
 token = ""
 
 def get_spotify_token():
+    global token
     url = "https://accounts.spotify.com/api/token"
 
     #get auth credentials from env
@@ -47,6 +48,21 @@ def get_spotify_token():
         # Request failed
         print('POST request failed')
 
+def spotify_search(song, artist):
+    headers = {
+    'Authorization': 'Bearer ' + token
+    }   
+    
+    formatted_song = song.replace(" ", "%20")
+    formatted_artist = artist.replace(" ", "%20")
+    url = f'https://api.spotify.com/v1/search?q=%2520track%3A{formatted_song}%2520artist%3A{formatted_artist}&type=track&limit=1&offset=0'
+
+    response = requests.get(url, headers=headers)
+    data = response.json()  # Convert response content to JSON
+
+    track_id = data['tracks']['items'][0]['id']
+    return track_id
+
 @app.route("/playlist/<string:date>")
 def playlist(date):
     #making a request to Billboard website to get hot 100 in a particular week
@@ -61,10 +77,11 @@ def playlist(date):
     playlist = []
     #parsing song and the artist from web content
     for row in rows:
-        song = row.find("ul").find("h3").string
-        artist = row.find("ul").find_all("span")[1].string
-        entry = (song.strip(),artist.strip())
-        playlist.append(entry)
+        song = row.find("ul").find("h3").string.strip()
+        artist = row.find("ul").find_all("span")[1].string.strip()
+        song_id = spotify_search(song, artist)
+        playlist.append(song_id)
+        
     return {"songs": playlist}
 
 if __name__=="__main__":
