@@ -1,9 +1,51 @@
 from flask import Flask
 from bs4 import BeautifulSoup
-import re
+import os
 import requests
+from dotenv import load_dotenv
 
 app = Flask(__name__)
+load_dotenv()
+
+#global variables
+token = ""
+
+def get_spotify_token():
+    url = "https://accounts.spotify.com/api/token"
+
+    #get auth credentials from env
+    CLIENT_ID = os.getenv("CLIENT_ID")
+    CLIENT_SECRET = os.getenv("CLIENT_SECRET")
+    
+    #set up body for post request
+    auth_parameters = {
+      'body': 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+    }
+
+    #set the header
+    headers = {
+        'Content-Type': 'application/x-www-form-urlencoded'
+    }
+
+    #sending a POST request to spotify endpoint
+    response = requests.post(url, data=auth_parameters['body'], headers=headers)
+
+    #handle
+    if response.status_code == 200:
+        # Request was successful
+        print('POST request succeeded')
+
+        response_data = response.json()
+        access_token = response_data.get('access_token')
+
+        if access_token:
+            print('Access Token:', access_token)
+            token = access_token
+        else:
+            print('Access Token not found in response')
+    else:
+        # Request failed
+        print('POST request failed')
 
 @app.route("/playlist/<string:date>")
 def playlist(date):
@@ -26,4 +68,5 @@ def playlist(date):
     return {"songs": playlist}
 
 if __name__=="__main__":
+    get_spotify_token()
     app.run(debug=True)
