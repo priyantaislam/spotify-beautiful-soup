@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useReducer } from 'react';
+import { useAuthContext } from '../Hooks/useAuthContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DateForm.css'
@@ -6,6 +7,7 @@ import './DateForm.css'
 const DateForm = () => {
   const [date, setDate] = useState("0000-00-00");
   const [songs, setSongs] = useState([]);
+  const { token } = useAuthContext();
 
   //changes the date on change
   const handleDateChange = (date) => {
@@ -31,7 +33,7 @@ const DateForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
-    
+    console.log(token)
     //Create the playlist
     // making the backend API call with selected date
     if (date) {
@@ -41,7 +43,7 @@ const DateForm = () => {
         .then((response) => response.json())
         .then((data) => {
           // Process the response data
-          console.log(data);
+          //console.log(data);
         })
         .catch((error) => {
           // Handle any errors
