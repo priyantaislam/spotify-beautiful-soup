@@ -10,7 +10,7 @@ const Login = () => {
   return (
     <div className='formContainer'>
         <h1 className='titleCard'>Spotify Billboard Hot 100</h1>
-        <a className='submit' href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&scope=playlist-modify-private&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+        <a className='submit' href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&scope=playlist-modify-private&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}&show_dialog=true`}>Login
                         to Spotify</a>
     </div>
   );
