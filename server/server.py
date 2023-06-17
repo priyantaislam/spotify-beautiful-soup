@@ -1,52 +1,30 @@
-from flask import Flask
+from flask import Flask, request
 from bs4 import BeautifulSoup
 import os
 import requests
 from dotenv import load_dotenv
+import json
 
 app = Flask(__name__)
 load_dotenv()
 
 #global variables
 token = ""
+USER_ID = ""
 
-def get_spotify_token():
-    global token
-    url = "https://accounts.spotify.com/api/token"
-
-    #get auth credentials from env
-    CLIENT_ID = os.getenv("CLIENT_ID")
-    CLIENT_SECRET = os.getenv("CLIENT_SECRET")
-    
-    #set up body for post request
-    auth_parameters = {
-      'body': 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
-    }
-
-    #set the header
+def get_user_id():
+    global USER_ID
     headers = {
-        'Content-Type': 'application/x-www-form-urlencoded'
-    }
+    'Authorization': 'Bearer ' + token
+    }   
 
-    #sending a POST request to spotify endpoint
-    response = requests.post(url, data=auth_parameters['body'], headers=headers)
+    url = f'https://api.spotify.com/v1/me'
 
-    #handle
-    if response.status_code == 200:
-        # Request was successful
-        print('POST request succeeded')
+    response = requests.get(url, headers=headers)
+    data = response.json()  # Convert response content to JSON
 
-        response_data = response.json()
-        access_token = response_data.get('access_token')
-
-        if access_token:
-            print('Access Token:', access_token)
-            token = access_token
-        else:
-            print('Access Token not found in response')
-    else:
-        # Request failed
-        print('POST request failed')
+    USER_ID = data['id']
+    print(USER_ID)
 
 def spotify_search(song, artist):
     headers = {
@@ -63,8 +41,69 @@ def spotify_search(song, artist):
     track_id = data['tracks']['items'][0]['id']
     return track_id
 
+##USER AUTH need to be implemented
+def create_playlist(date):
+    global USER_ID
+
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }  
+
+    auth_parameters = {
+        "name": "Billboard Hot 100 " + date,
+        "public": "false",
+        "collaborative": "false",
+        "description": "Billboard Hot 100"
+    }
+
+    url = f'https://api.spotify.com/v1/users/{USER_ID}/playlists'
+
+    response = requests.post(url, data=json.dumps(auth_parameters), headers=headers)
+    data = response.json()
+
+    #handle
+    if response.status_code == 201:
+        # Request was successful
+        print('POST request succeeded')
+        return data['id']
+    else:
+        # Request failed
+        print('POST request failed')
+        print(response.content)
+
+def add_tracks(playlist_id, tracks):
+    headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+    }  
+
+    body = {
+        "uris": tracks 
+    }
+
+    url = f'https://api.spotify.com/v1/playlists/{playlist_id}/tracks'
+
+    response = requests.post(url, data=json.dumps(body), headers=headers)
+    data = response.json()
+
+    #handle
+    if response.status_code == 201:
+        # Request was successful
+        print('POST request succeeded')
+        print('tracks added')
+    else:
+        # Request failed
+        print('POST request failed')
+        print(response.content)
+
 @app.route("/playlist/<string:date>")
 def playlist(date):
+    global token
+    playlist_id = ""
+    # Set token from Authorization header of the incoming request
+    token = request.headers.get('Authorization').split()[1]
+
     #making a request to Billboard website to get hot 100 in a particular week
     response = requests.get("https://www.billboard.com/charts/hot-100/{}".format(date))
     web_page = response.text
@@ -74,16 +113,24 @@ def playlist(date):
 
     rows = soup.find_all(class_="o-chart-results-list-row-container")
 
-    playlist = []
+    get_user_id()
+    #playlist_id = create_playlist(date)
+    #print(playlist_id)
+    tracks = []
     #parsing song and the artist from web content
+    count = 0
     for row in rows:
         song = row.find("ul").find("h3").string.strip()
         artist = row.find("ul").find_all("span")[1].string.strip()
-        song_id = spotify_search(song, artist)
-        playlist.append(song_id)
+        count += 1
+        print(count)
+        #song_id = spotify_search(song, artist)
+        #print(str(count) + " " + song_id)
+        #tracks.append("spotify:track:" + song_id)
+    
+    #add_tracks(playlist_id, tracks)
         
-    return {"songs": playlist}
+    return {"songs": []}
 
 if __name__=="__main__":
-    get_spotify_token()
     app.run(debug=True)
