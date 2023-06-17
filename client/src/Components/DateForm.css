@@ -28,9 +28,10 @@
   font-size: 40px;
   font-family: 'digital';
   color: #fff;
-  animation: flickerAnimation 1s infinite;
-  /* Set the color of the text */
-  text-shadow: 0 0 0.5vw #fff, 0 0 2vw #02f13a;
+}
+
+.titleCard{
+  color: #fff;
 }
 
 .date {
@@ -95,5 +96,15 @@ background-color: darkgray;
   100% {
     opacity: 1;
   }
+}
+
+.logout{
+  background-color: #000000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }
 

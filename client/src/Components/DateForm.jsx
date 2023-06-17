@@ -7,7 +7,7 @@ import './DateForm.css'
 const DateForm = () => {
   const [date, setDate] = useState("0000-00-00");
   const [songs, setSongs] = useState([]);
-  const { token } = useAuthContext();
+  const { token, dispatch } = useAuthContext();
 
   //changes the date on change
   const handleDateChange = (date) => {
@@ -33,24 +33,35 @@ const DateForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
-    console.log(token)
-    //Create the playlist
-    // making the backend API call with selected date
+    console.log(token);
+  
+    // Create the playlist
+    // Making the backend API call with selected date
     if (date) {
       console.log('Selected date:', date);
-      // Replace the console.log with your desired function or action
-      fetch(`/playlist/${date}`)
+      fetch(`/playlist/${date}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
         .then((response) => response.json())
         .then((data) => {
           // Process the response data
-          //console.log(data);
+          // console.log(data);
         })
         .catch((error) => {
           // Handle any errors
           console.error(error);
         });
-      //Display playlist in embedded window
+  
+      // Display playlist in embedded window
     }
+  };
+
+  const handleLogout = () => {
+    dispatch({type: 'TOKEN', payload: null});
+    window.localStorage.removeItem("token");
+    window.location.reload();
   };
 
   return (
@@ -74,6 +85,9 @@ const DateForm = () => {
           />
         </div>
         <button className='submit' type="submit">Submit</button>
+        <button className='logout' type="button" onClick={handleLogout}>
+          Logout
+        </button>
       </form>
     </div>
   );

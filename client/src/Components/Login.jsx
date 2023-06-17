@@ -9,8 +9,8 @@ const Login = () => {
   const RESPONSE_TYPE = "token"
   return (
     <div className='formContainer'>
-        
-        <a className='submit' href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
+        <h1 className='titleCard'>Spotify Billboard Hot 100</h1>
+        <a className='submit' href={`${AUTH_ENDPOINT}?client_id=${CLIENT_ID}&scope=playlist-modify-private&redirect_uri=${REDIRECT_URI}&response_type=${RESPONSE_TYPE}`}>Login
                         to Spotify</a>
     </div>
   );
