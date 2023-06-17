@@ -1,6 +1,5 @@
 from flask import Flask, request
 from bs4 import BeautifulSoup
-import os
 import requests
 from dotenv import load_dotenv
 import json
@@ -38,10 +37,13 @@ def spotify_search(song, artist):
     response = requests.get(url, headers=headers)
     data = response.json()  # Convert response content to JSON
 
-    track_id = data['tracks']['items'][0]['id']
-    return track_id
+    try:
+        track_id = data['tracks']['items'][0]['id']
+        return track_id  
+    except (KeyError, IndexError, requests.exceptions.RequestException) as e:
+        print(f"An error occurred: {e}")
+        return "ERROR"
 
-##USER AUTH need to be implemented
 def create_playlist(date):
     global USER_ID
 
@@ -71,6 +73,7 @@ def create_playlist(date):
         # Request failed
         print('POST request failed')
         print(response.content)
+        return "ERROR"
 
 def add_tracks(playlist_id, tracks):
     headers = {
@@ -114,23 +117,20 @@ def playlist(date):
     rows = soup.find_all(class_="o-chart-results-list-row-container")
 
     get_user_id()
-    #playlist_id = create_playlist(date)
+    playlist_id = create_playlist(date)
     #print(playlist_id)
     tracks = []
     #parsing song and the artist from web content
     count = 0
     for row in rows:
-        song = row.find("ul").find("h3").string.strip()
-        artist = row.find("ul").find_all("span")[1].string.strip()
-        count += 1
-        print(count)
-        #song_id = spotify_search(song, artist)
-        #print(str(count) + " " + song_id)
-        #tracks.append("spotify:track:" + song_id)
+        song_tag = row.find("ul").find("h3")
+        song = song_tag.string.strip()
+        artist = song_tag.parent.find("span").string.strip()
+        song_id = spotify_search(song, artist)
+        tracks.append("spotify:track:" + song_id)
     
-    #add_tracks(playlist_id, tracks)
-        
-    return {"songs": []}
+    add_tracks(playlist_id, tracks)
+    return {"playlist_id": playlist_id}
 
 if __name__=="__main__":
     app.run(debug=True)
