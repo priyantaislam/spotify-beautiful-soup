@@ -6,8 +6,8 @@ import './DateForm.css'
 
 const DateForm = () => {
   const [date, setDate] = useState("0000-00-00");
-  const [songs, setSongs] = useState([]);
   const { token, dispatch } = useAuthContext();
+  const [playlistID, setPlaylistID] = useState("");
 
   //changes the date on change
   const handleDateChange = (date) => {
@@ -47,7 +47,7 @@ const DateForm = () => {
         .then((response) => response.json())
         .then((data) => {
           // Process the response data
-          // console.log(data);
+          setPlaylistID(data.playlist_id)
         })
         .catch((error) => {
           // Handle any errors
@@ -61,34 +61,54 @@ const DateForm = () => {
   const handleLogout = () => {
     dispatch({type: 'TOKEN', payload: null});
     window.localStorage.removeItem("token");
+    setPlaylistID("");
     window.location.reload();
   };
 
   return (
-    <div className='formContainer'>
-      <form className="form" onSubmit={handleSubmit}>
-        <div className='displayDiv'>
-          <span className='displayDate'>{date}</span>
+    <div>
+      <div className='formContainer'>
+        <form className="form" onSubmit={handleSubmit}>
+          <div className='displayDiv'>
+            <span className='displayDate'>{date}</span>
+          </div>
+          <div className='date'>
+            <DatePicker
+              //selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd/MM/yyyy"
+              placeholderText="Select a date"
+              showYearDropdown
+              scrollableYearDropdown
+              yearDropdownItemNumber={100}
+              minDate={new Date(1960, 1, 1)}
+              maxDate={new Date(2023, 11, 31)}
+              filterDate={validateDate}
+            />
+          </div>
+          <button className='submit' type="submit">Submit</button>
+          <button className='logout' type="button" onClick={handleLogout}>
+            Logout
+          </button>
+        </form>
+      </div>
+      {playlistID === "" 
+        ?
+        <div style={{ background: 'black', width: '100%', height: '100%', minHeight: '360px' }}>
+          <h2 style={{ color: 'white', textAlign: 'center' }}>Test Component</h2>
         </div>
-        <div className='date'>
-          <DatePicker
-            //selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat="dd/MM/yyyy"
-            placeholderText="Select a date"
-            showYearDropdown
-            scrollableYearDropdown
-            yearDropdownItemNumber={100}
-            minDate={new Date(1960, 1, 1)}
-            maxDate={new Date(2023, 11, 31)}
-            filterDate={validateDate}
-          />
-        </div>
-        <button className='submit' type="submit">Submit</button>
-        <button className='logout' type="button" onClick={handleLogout}>
-          Logout
-        </button>
-      </form>
+        :
+        <iframe
+          title="Spotify Embed: Recommendation Playlist "
+          src={`https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator&theme=0`}
+          width="100%"
+          height="100%"
+          style={{ minHeight: '360px' }}
+          frameBorder="0"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      }
     </div>
   );
 };
