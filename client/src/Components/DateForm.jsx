@@ -27,6 +27,16 @@ const DateForm = () => {
     return formattedDate;
   };
 
+  //formats date in dd-mm-yyyy
+  const displayFormat = (date) => {
+    var parts = date.split("-");
+    var year = parts[0];
+    var month = parts[1];
+    var day = parts[2];
+
+    return day + "-" + month + "-" + year;
+  }
+
   //Validates input date in range
   const validateDate = (date) => {
     const minDate = new Date(1960, 1, 1);
@@ -76,7 +86,7 @@ const DateForm = () => {
       <div className='formContainer'>
         <form className="form" onSubmit={handleSubmit}>
           <div className='displayDiv'>
-            <span className='displayDate'>{date}</span>
+            <span className='displayDate'>{displayFormat(date)}</span>
           </div>
           <div className='dateContainer'>
             <div className='date'>
@@ -112,7 +122,7 @@ const DateForm = () => {
           </div>
         ) : (
           <div className='gifContainer'>
-            <p className='loadingText'>Select a date and listen to the Billboard Hot 100 on that day. Let the sounds of the past roll back the years!</p>
+            <p className='loadingText'>Select a date and listen to the Billboard Hot 100 of that day. Let the sounds of the past roll back the years!</p>
             <img  className="gif" src={gifImage2} alt="Animated GIF" style={{ width: '20%', height: '20%' }} />
           </div>
         )}
