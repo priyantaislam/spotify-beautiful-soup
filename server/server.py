@@ -118,6 +118,7 @@ def playlist(date):
 
     get_user_id()
     playlist_id = create_playlist(date)
+    
     #print(playlist_id)
     tracks = []
     #parsing song and the artist from web content
@@ -127,6 +128,8 @@ def playlist(date):
         song = song_tag.string.strip()
         artist = song_tag.parent.find("span").string.strip()
         song_id = spotify_search(song, artist)
+        if(song_id == "ERROR"):
+            continue
         tracks.append("spotify:track:" + song_id)
     
     add_tracks(playlist_id, tracks)

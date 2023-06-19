@@ -3,6 +3,8 @@ import { useAuthContext } from '../Hooks/useAuthContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import './DateForm.css'
+import gifImage from '../Assets/cassette2.gif';
+import gifImage2 from '../Assets/cassette3.gif';
 
 const DateForm = () => {
   const [date, setDate] = useState("1985-01-01");
@@ -35,6 +37,7 @@ const DateForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
     setLoading(true); // Start loading
+    setPlaylistID("");
     console.log(token);
   
     // Create the playlist
@@ -88,6 +91,7 @@ const DateForm = () => {
                 minDate={new Date(1960, 1, 1)}
                 maxDate={new Date(2022, 11, 31)}
                 filterDate={validateDate}
+                disabled={loading}
               />
             </div>
             <button className='submit' type="submit" disabled={loading}>
@@ -99,12 +103,21 @@ const DateForm = () => {
           </button>
         </form>
       </div>
-      {playlistID === "" 
-        ?
-        <div style={{ background: 'black', width: '100%', height: '100%', minHeight: '360px' }}>
-          <h2 style={{ color: 'white', textAlign: 'center' }}>Test Component</h2>
+      {playlistID === "" ? (
+        <div className='defaultScreen' style={{ background: 'black', width: '100%', height: '100%', minHeight: '360px' }}>
+        {loading ? (
+          <div className='gifContainer'>
+            <p className='loadingText'>Please wait while we create the playlist...</p>
+            <img  className="gif" src={gifImage} alt="Animated GIF" style={{ width: '20%', height: '20%' }} />
+          </div>
+        ) : (
+          <div className='gifContainer'>
+            <p className='loadingText'>Select a date and listen to the Billboard Hot 100 on that day. Let the sounds of the past roll back the years!</p>
+            <img  className="gif" src={gifImage2} alt="Animated GIF" style={{ width: '20%', height: '20%' }} />
+          </div>
+        )}
         </div>
-        :
+        ) :
         <iframe
           title="Spotify Embed: Recommendation Playlist "
           src={`https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator&theme=0`}
@@ -114,6 +127,7 @@ const DateForm = () => {
           frameBorder="0"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
+          className='spotifyFrame'
         />
       }
     </div>
