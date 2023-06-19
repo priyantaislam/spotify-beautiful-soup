@@ -5,9 +5,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './DateForm.css'
 
 const DateForm = () => {
-  const [date, setDate] = useState("0000-00-00");
+  const [date, setDate] = useState("1985-01-01");
   const { token, dispatch } = useAuthContext();
   const [playlistID, setPlaylistID] = useState("");
+  const [loading, setLoading] = useState(false); // Added loading state
 
   //changes the date on change
   const handleDateChange = (date) => {
@@ -33,6 +34,7 @@ const DateForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); // Prevents the default form submission behavior
+    setLoading(true); // Start loading
     console.log(token);
   
     // Create the playlist
@@ -48,6 +50,7 @@ const DateForm = () => {
         .then((data) => {
           // Process the response data
           setPlaylistID(data.playlist_id)
+          setLoading(false); // Stop loading
         })
         .catch((error) => {
           // Handle any errors
@@ -72,21 +75,25 @@ const DateForm = () => {
           <div className='displayDiv'>
             <span className='displayDate'>{date}</span>
           </div>
-          <div className='date'>
-            <DatePicker
-              //selected={selectedDate}
-              onChange={handleDateChange}
-              dateFormat="dd/MM/yyyy"
-              placeholderText="Select a date"
-              showYearDropdown
-              scrollableYearDropdown
-              yearDropdownItemNumber={100}
-              minDate={new Date(1960, 1, 1)}
-              maxDate={new Date(2023, 11, 31)}
-              filterDate={validateDate}
-            />
+          <div className='dateContainer'>
+            <div className='date'>
+              <DatePicker
+                //selected={selectedDate}
+                onChange={handleDateChange}
+                dateFormat="dd/MM/yyyy"
+                placeholderText="Select a date"
+                showYearDropdown
+                scrollableYearDropdown
+                yearDropdownItemNumber={100}
+                minDate={new Date(1960, 1, 1)}
+                maxDate={new Date(2022, 11, 31)}
+                filterDate={validateDate}
+              />
+            </div>
+            <button className='submit' type="submit" disabled={loading}>
+              {loading ? 'Loading...' : 'Submit'}
+            </button>
           </div>
-          <button className='submit' type="submit">Submit</button>
           <button className='logout' type="button" onClick={handleLogout}>
             Logout
           </button>
@@ -103,7 +110,7 @@ const DateForm = () => {
           src={`https://open.spotify.com/embed/playlist/${playlistID}?utm_source=generator&theme=0`}
           width="100%"
           height="100%"
-          style={{ minHeight: '360px' }}
+          style={{ minHeight: '430px' }}
           frameBorder="0"
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
