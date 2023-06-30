@@ -5,5 +5,5 @@ A React project with Python Flask backend utilising the spotify API. The web int
 
 #### TO-DO
 
--Refactor Spotify login to authorization with PKCE
+-Refactor Spotify login to authorization with PKCE\
 -Fix Spotify track searching in the backend
