@@ -7,5 +7,5 @@ A React project with Python Flask backend utilising the spotify API. The front-e
 #### TO-DO
 
 -Refactor Spotify login to authorization with PKCE\
--Refactor DateForm component into multiple components
+-Refactor DateForm component into multiple components\
 -Fix Spotify track searching in the backend
